@@ -1,36 +1,36 @@
 const fs = require('fs')
 
 // access global mock db file
-const tickets = require(global.mock_db)
+const bookings = require(global.mock_db)
 
 // write service method implementations
-const ticket_service = {
+const booking_service = {
     getAll() {
-        return tickets
+        return bookings
     },
     getById(id) {
-        return tickets.find(t => t.id == id)
+        return bookings.find(t => t.id == id)
     },    
     create(req, res) {
         let new_id = genRandId(4)
                 
-        const ticket = req.body
+        const booking = req.body
 
-        const new_ticket = {
+        const new_booking = {
             id: new_id,
-            ticket: ticket
+            booking: booking
         }
 
-        tickets.push(new_ticket)
+        bookings.push(new_booking)
         
-        writeToFile(tickets)
+        writeToFile(bookings)
         
-        return new_ticket
+        return new_booking
     },
     delete(id) {
-        const index = tickets.findIndex(u => u.id == id)
-        tickets.splice(index, 1)    
-        writeToFile(tickets)
+        const index = bookings.findIndex(u => u.id == id)
+        bookings.splice(index, 1)    
+        writeToFile(bookings)
     }
 }
 
@@ -57,4 +57,4 @@ let genRandId = (count) =>{
     return result
 }
 
-module.exports = ticket_service
+module.exports = booking_service
