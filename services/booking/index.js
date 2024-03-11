@@ -27,6 +27,19 @@ const booking_service = {
         
         return new_booking
     },
+    update(id, updateData){
+        const bookingIndex = bookings.findIndex(t => t.id == id)
+
+        if (bookingIndex === -1) {
+            return null
+        }
+
+        bookings[bookingIndex].booking = { ...bookings[bookingIndex].booking, ...updateData }
+
+        writeToFile(bookings)
+
+        return bookings[bookingIndex]
+    },
     delete(id) {
         const index = bookings.findIndex(u => u.id == id)
         bookings.splice(index, 1)    

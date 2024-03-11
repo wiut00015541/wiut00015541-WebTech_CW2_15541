@@ -11,6 +11,15 @@ const booking_controller = {
             booking_service.create(req, res)
         )
     },
+    update(req, res) {
+        const booking = booking_service.update(req.params.id, req.body)
+        
+        if (booking) {
+            res.json(booking)
+        } else {
+            res.status(404).send('Booking not found')
+        }
+    },
     delete(req, res) {
         const booking = booking_service.getById(req.params.id)
         

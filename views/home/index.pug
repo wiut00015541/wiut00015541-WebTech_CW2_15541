@@ -1,12 +1,16 @@
 include ../head.pug
 body
     .container.mt-5
-      h1 List
+      .row.d-flex.align-items-center
+        .col-md-6
+          h1 Hotel Room Reservation List
+        .col-md-6.text-end
+          a.btn.btn-success(href='/add', role='button') Add Reservation     
       table.table.table-responsive.table-hover.table-striped.table-dark
         thead
           tr
             th(scope="col") ID
-            th(scope="col") Booking Name
+            th(scope="col") Name 
             th(scope="col") Booking Date/Time
             th(scope="col") Hotel
             th(scope="col") Contact Phone
@@ -14,44 +18,44 @@ body
             th(scope="col") Actions
         tbody
 script.
-      document.addbookingListener('DOMContentLoaded', function() {
-        axios.get('/api/booking')
-          .then(function(response) {
-            const bookings = response.data;
-            const tableBody = document.querySelector('table tbody');
-            bookings.forEach(t => {
-              const row = document.createElement('tr');
-              const booking = t.booking
-              row.innerHTML = `
-                <td>${t.id}</td>
-                <td>${booking.bookingName}</td>
-                <td>${booking.bookingDateTime}</td>
-                <td>${booking.hotel}</td>
-                <td>${booking.contactPhone}</td>
-                <td>${booking.room}</td>
-                <td>
-                  <button class="btn btn-primary btn-sm">Edit</button>
-                  <button class="btn btn-danger btn-sm" data-id="${t.id}">Delete</button>
-                </td>
-              `;
-              tableBody.appendChild(row);
-            });
-          })
-          .catch(function(error) {
-            console.log(error);
-          });
-
-          // Use booking delegation for delete buttons
-          document.addbookingListener('click', function(booking) {
-            if (booking.target && booking.target.classList.contains('btn-danger')) {
-              const bookingId = booking.target.getAttribute('data-id');
-              axios.delete(`/api/booking/${bookingId}`).then(function(response) {
-                console.log('Delete successful', response);
-                location.href = '/'
-              })
-              .catch(function(error) {
-                console.log('Error deleting booking', error);
-              });
-            }
-          });
+  document.addEventListener('DOMContentLoaded', function() {
+    axios.get('/api/booking').then(function(response) {
+      const bookings = response.data;
+      const tableBody = document.querySelector('table tbody');
+      bookings.forEach(t => {
+        const row = document.createElement('tr');
+        const booking = t.booking
+        row.innerHTML = `
+          <td>${t.id}</td>
+          <td>${booking.bookingName}</td>
+          <td>${booking.bookingDateTime}</td>
+          <td>${booking.hotel}</td>
+          <td>${booking.contactPhone}</td>
+          <td>${booking.room}</td>
+          <td>
+            <button class="btn btn-primary btn-sm" data-id="${t.id}" onclick="window.location.href='/update/${t.id}'">Update</button>
+            <button class="btn btn-danger btn-sm" data-id="${t.id}">Delete</button>
+          </td>
+        `;
+        tableBody.appendChild(row);
       });
+    })
+    .catch(function(error) {
+      console.log(error);
+    });
+
+    // Use event delegation for delete buttons
+    document.addEventListener('click', function(event) {
+      if (event.target && event.target.classList.contains('btn-danger')) {
+        const bookingId = event.target.getAttribute('data-id');
+        axios.delete(`/api/booking/${bookingId}`).then(function(response) {
+          alert('Deleted successfully', response);
+          location.href = '/'
+        })
+        .catch(function(error) {
+          alert('Error deleting booking: ' + error);
+        });
+      }
+    });
+    
+  });

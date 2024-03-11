@@ -1,34 +1,74 @@
 include ../head.pug
 body
-    .container.mt-5
-      h1 Add/Update Booking
-      form(action="/submit-booking-form" method="POST")
-        .mb-3
-          label(for="bookingName" class="form-label") Booking Name
-          input(type="text" class="form-control" id="bookingName" name="bookingName" required)
-        .mb-3
-          label(for="bookingDateTime" class="form-label") Booking Date/Time
-          .input-group.date(id="datetimepicker1" data-target-input="nearest")
-            input(type="text" class="form-control datetimepicker-input" data-target="#datetimepicker1" name="bookingDateTime" required)
-            .input-group-append(data-target="#datetimepicker1" data-toggle="datetimepicker")
-              .input-group-text
-                i.fas.fa-calendar-alt
-        .mb-3
-          label(for="hotel" class="form-label") Hotel
-          input(type="text" class="form-control" id="hotel" name="hotel" required)
-        .mb-3
-          label(for="contactPhone" class="form-label") Contact Phone
-          input(type="tel" class="form-control" id="contactPhone" name="contactPhone" required)
-        .mb-3
-          label(for="room" class="form-label") Room
-          input(type="text" class="form-control" id="room" name="room" required)
-        button(type="submit" class="btn btn-primary") Add/Edit
+  .container.mt-5
+    h1 #{mode}
+    .mb-3
+      label(for="bookingName" class="form-label") Name
+      input(type="text" class="form-control" id="bookingName" name="bookingName" required)
+    .mb-3
+      label(for="bookingDateTime" class="form-label") Booking Date/Time
+      .input-group.date(id="datetimepicker1" data-target-input="nearest")
+        input(type="text" class="form-control datetimepicker-input" data-target="#datetimepicker1" id="bookingDateTime" name="bookingDateTime" required)
+        .input-group-append(data-target="#datetimepicker1" data-toggle="datetimepicker")
+          .input-group-text
+            i.fas.fa-calendar-alt
+    .mb-3
+      label(for="hotel" class="form-label") Hotel
+      input(type="text" class="form-control" id="hotel" name="hotel" required)
+    .mb-3
+      label(for="contactPhone" class="form-label") Contact Phone
+      input(type="tel" class="form-control" id="contactPhone" name="contactPhone" required)
+    .mb-3
+      label(for="room" class="form-label") Room
+      input(type="text" class="form-control" id="room" name="room" required)
+    button(type="submit" class="btn btn-success" onclick="submitForm()") #{mode === 'Update' ? 'Update' : 'Add'}
+    span &nbsp;
+    button(type="submit" class="btn btn-primary" onclick="window.location.href='/'") Back to list
 
-    script.
-        const picker = new tempusDominus.TempusDominus(document.getElementById('datetimepicker1'),{
-            localization: {
-                'locale': 'fr'
-            }
-        });
-        picker.dates.formatInput = function(date) {
-            return moment(date).format('DD/MM/YYYY HH:mm') };
+  script.
+    const format = 'DD/MM/YYYY HH:mm'
+    const picker = new tempusDominus.TempusDominus(document.getElementById('datetimepicker1'),{
+        localization: {
+            'locale': 'fr'
+        }
+    })
+    picker.dates.formatInput = function(date) {
+        return moment(date).format(format)
+    }
+
+    if ("#{mode}" === "Update") {
+      const eventData = !{JSON.stringify(eventData || {})}.booking;
+      document.getElementById('bookingName').value = eventData.bookingName || '';
+
+      picker.dates.setValue(
+        new tempusDominus.DateTime(moment(eventData.bookingDateTime, format))
+      );
+
+      document.getElementById('hotel').value = eventData.hotel || '';
+      document.getElementById('contactPhone').value = eventData.contactPhone || '';
+      document.getElementById('seat').value = eventData.room || '';
+    }
+
+    function submitForm() {
+      const eventData = {
+        bookingName: document.getElementById('bookingName').value,
+        bookingDateTime: document.getElementById('bookingDateTime').value,
+        hotel: document.getElementById('hotel').value,
+        contactPhone: document.getElementById('contactPhone').value,
+        room: document.getElementById('room').value,
+      };
+
+      const url = "#{mode}" === "Update" ? `/api/booking/${!{JSON.stringify(eventData || {})}.id}` : '/api/booking';
+      const method = "#{mode}" === "Update" ? 'put' : 'post';
+
+      axios[method](url, eventData).then(response => {
+        alert('Success!');
+        location.href = '/'
+      })
+      .catch(error => {
+        if(error.response)
+          alert(JSON.stringify(error.response.data.errors))
+        else
+          alert(error)
+      });
+    }
