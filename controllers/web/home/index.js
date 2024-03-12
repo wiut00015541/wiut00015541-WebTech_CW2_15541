@@ -12,5 +12,5 @@ const home_controller = {
         res.render('home/add_update', { mode: 'Update', eventData: eventData });
     }
 };
-  
+
 module.exports = home_controller;
