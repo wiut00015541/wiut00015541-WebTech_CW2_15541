@@ -1,6 +1,6 @@
 const { body, param } = require('express-validator');
 const booking_service = require('../../services/booking')
-
+//-add function
 const addBookingValidation = () => {
   return [
     body('bookingName')
@@ -19,7 +19,7 @@ const addBookingValidation = () => {
       .notEmpty().withMessage('Room must not be empty'),      
   ];
 };
-
+//-delete function
 const deleteBookingValidation = () => {
   return [
     param('id').custom(async (id) => {
@@ -30,7 +30,7 @@ const deleteBookingValidation = () => {
     })
   ];
 };
-
+//-update function
 const updateBookingValidation = () => {
   return [
     param('id').custom(async (id) => {

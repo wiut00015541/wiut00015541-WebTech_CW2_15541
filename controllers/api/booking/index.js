@@ -1,7 +1,7 @@
-// import specific service class
+// specific service class
 const booking_service = require('../../../services/booking')
 
-// mention the service's needed actions (methods)
+// methods
 const booking_controller = {
     getAll(req, res) {
         res.json(booking_service.getAll())

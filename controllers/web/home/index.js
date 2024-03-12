@@ -1,5 +1,5 @@
 const booking_service = require('../../../services/booking')
-
+//method
 const home_controller = {
     index: async (req, res) =>{
         res.render('home');
