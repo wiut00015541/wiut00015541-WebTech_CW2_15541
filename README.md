@@ -21,6 +21,6 @@ This web application allows users to read database, book hotel rooms online, edi
 - Nodemon (for automatic server restarts)
 
 ## Links
-- [Public Repo on GitHub](https://github.com/wiut00015541/wiut00015541-WebTech_CW2_15541]
+- [Public Repo on GitHub](https://github.com/wiut00015541/wiut00015541-WebTech_CW2_15541.git]
 )
 - [Hosted Application](http://51.20.249.219:3000/) 
